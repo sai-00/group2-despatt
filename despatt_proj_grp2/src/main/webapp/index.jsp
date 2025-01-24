@@ -10,6 +10,7 @@
 <body>
     <div class="container">
         <h1>Welcome to Keeb Cove</h1>
+        <a href="cart.jsp">View Cart</a>
         <div class="product">
             <img src="akko_fairy.jpg" alt="Akko Fairy Silent" width="200">
             <form action="product" method="get">

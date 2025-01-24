@@ -14,7 +14,7 @@
         <p><strong>Price:</strong> PHP ${product.price}</p>
         <p><strong>Description:</strong> ${product.desc}</p>
 
-        <form action="checkout" method="post">
+        <form action="addToCart" method="post">
             <input type="hidden" name="productName" value="${product.name}">
             <input type="hidden" name="productPrice" value="${product.price}">
             <label for="quantity">Quantity: </label>
