@@ -1,0 +1,14 @@
+@charset "ISO-8859-1";
+
+h1, h2
+{
+	text-align: center;
+}
+h1
+{
+	color: #7159ad;
+}
+h2
+{
+	color: #fff;
+}

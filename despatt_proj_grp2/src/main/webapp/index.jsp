@@ -5,18 +5,26 @@
 <head>
     <meta charset="UTF-8">
     <title>KeebCove - Home</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
+	<div class="topnav">
+		<div class="logo"><a href="index.jsp"><img src="imgs/keeb_cove_logo_tr.png" width=120"></a></div>
+	  	<div class="cart"><a href="cart.jsp"><img src="imgs/cart.png" width=40"></a></div>
+	</div>
+	
     <div class="container">
-        <h1>Welcome to Keeb Cove</h1>
-        <a href="cart.jsp">View Cart</a>
-        <div class="product">
-            <img src="akko_fairy.jpg" alt="Akko Fairy Silent" width="200">
-            <form action="product" method="get">
-                <input type="hidden" name="product" value="Akko Fairy Silent">
-                <button type="submit">View Product</button>
-            </form>
+        <h1>Welcome to Keeb Cove !</h1>
+        <h2>Products</h2>
+        <div class="product-parent">
+	        <div class="product">
+	            <img src="imgs/akkofairy.png" alt="Akko Fairy Silent" width="250" class="product-img">
+	            <form action="product" method="get">
+	                <input type="hidden" name="product" value="Akko Fairy Silent">
+	                <button type="submit">View Product</button>
+	            </form>
+	        </div>
         </div>
     </div>
 </body>

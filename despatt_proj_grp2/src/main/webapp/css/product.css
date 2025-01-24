@@ -1,0 +1,44 @@
+@charset "ISO-8859-1";
+h1
+{
+	color: #fff;
+}
+
+body
+{
+	color: #757575;
+}
+
+.container
+{
+	padding: 30px;
+}
+
+.product-content
+{
+	display: flex;
+	flex: no-wrap;
+}
+
+.product-img
+{
+	float: left;
+	padding: 20px;
+}
+
+.product-img img
+{
+	border-radius: 20px;
+}
+
+.product-info
+{
+	margin-left: 50px;
+}
+
+.quan-box
+{
+	border-radius: 20px;
+	padding: 10px;
+	text-align:center;
+}
