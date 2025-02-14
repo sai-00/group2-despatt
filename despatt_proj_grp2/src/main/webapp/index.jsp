@@ -17,11 +17,54 @@
     <div class="container">
         <h1>Welcome to Keeb Cove !</h1>
         <h2>Products</h2>
+        
+        <h3>MX Keyboard Parts</h3>
         <div class="product-parent">
 	        <div class="product">
 	            <img src="imgs/akkofairy.png" alt="Akko Fairy Silent" width="250" class="product-img">
 	            <form action="product" method="get">
 	                <input type="hidden" name="product" value="Akko Fairy Silent">
+	                <button type="submit">View Product</button>
+	            </form>
+	        </div>
+	        <div class="product">
+	            <img src="imgs/akkotop40.png" alt="Akko Top 40" width="250" class="product-img">
+	            <form action="product" method="get">
+	                <input type="hidden" name="product" value="Akko Top 40">
+	                <button type="submit">View Product</button>
+	            </form>
+	        </div>
+	        <div class="product">
+	            <img src="imgs/akkokeycaps.jpg" alt="Akko Keycaps" width="250" class="product-img">
+	            <form action="product" method="get">
+	                <input type="hidden" name="product" value="Akko Keycaps">
+	                <button type="submit">View Product</button>
+	            </form>
+	        </div>
+        </div>
+        
+        <hr>
+        
+        <h3>Choc Keyboard Parts</h3>
+        <div class="product-parent">
+	        <div class="product">
+	            <img src="imgs/chocambientswitch.png" alt="Ambient Twilight Choc switches" width="250" class="product-img">
+	            <form action="product" method="get">
+	                <input type="hidden" name="product" value="Ambient Twilight Choc switches">
+	                <button type="submit">View Product</button>
+	            </form>
+	        </div>
+	        <div class="product">
+	            <img src="imgs/choccaps.png" alt="Choc keycaps" width="250" class="product-img">
+	            <form action="product" method="get">
+	                <input type="hidden" name="product" value="Choc keycaps">
+	                <button type="submit">View Product</button>
+	            </form>
+	        </div>
+	        <div class="product">
+	            <img src="imgs/choccorne.png" alt="Choc Corne Barebones" width="250" class="product-img">
+	            <form action="product" method="get">
+	                <input type="hidden" name="product" value="Choc Corne Barebones">
 	                <button type="submit">View Product</button>
 	            </form>
 	        </div>

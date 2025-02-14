@@ -1,6 +1,6 @@
 package com.keebcove.model;
 
-public class AkkoFairy implements KbPart {
+public class AkkoFairy implements Product {
 
 	@Override
 	public String getName() {

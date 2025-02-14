@@ -1,18 +1,26 @@
 package com.keebcove.utility;
 
-import com.keebcove.model.KbPart;
+import com.keebcove.model.Product;
 import com.keebcove.model.AkkoFairy;
+import com.keebcove.model.AkkoTop40;
+import com.keebcove.model.AkkoKeycaps;
 
-public class KbPartFactory {
-	public static KbPart getName(String part) {
+public class KbPartFactory extends AbstractFactory{
+
+	public Product getProduct(String name) {
 		
-		KbPart keebpart = null;
+		if (name == null) return null;
+
+        switch (name.toUpperCase()) {
+        	case "AKKO FAIRY SILENT":
+        		return new AkkoFairy();
+        	case "AKKO TOP 40":
+        		return new AkkoTop40();
+            case "AKKO KEYCAPS":
+                return new AkkoKeycaps();
+            default:
+                return null;
+        }
 		
-		switch (part.toUpperCase()) {
-		case "AKKO FAIRY SILENT" :
-			keebpart = new AkkoFairy();
-			break;
-		}
-		return keebpart;
 	}
 }

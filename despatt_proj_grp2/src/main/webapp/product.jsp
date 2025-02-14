@@ -18,9 +18,6 @@
 		
 		<button><a href="keebcove">Back to Home</a></button>
 		
-		<br><br>
-		<div class="product-img"><img src="imgs/akkofairy.png" width="250"></div>
-		
         <div class="product-info">
         	<p><strong>Product Name:</strong> ${product.name}</p>
 	        <p><strong>Price:</strong> PHP ${product.price}</p>
