@@ -8,7 +8,11 @@ h1
 {
 	color: #7159ad;
 }
-h2, h3
+h2
+{
+	color: #fff;
+}
+h3
 {
 	color: #fff;
 }

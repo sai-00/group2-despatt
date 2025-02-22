@@ -19,9 +19,23 @@
 		<button><a href="keebcove">Back to Home</a></button>
 		
         <div class="product-info">
-        	<p><strong>Product Name:</strong> ${product.name}</p>
-	        <p><strong>Price:</strong> PHP ${product.price}</p>
-	        <p><strong>Description:</strong> ${product.desc}</p>
+        	<%@ page import="com.keebcove.model.Product" %>
+			<%
+			    Product product = (Product) request.getAttribute("product");
+			    if (product != null) {
+			%>
+			        <h1><%= product.getName() %></h1>
+			        <p>Category: <%= product.getCategory() %></p>
+			        <p>Price: PHP <%= product.getPrice() %></p>
+			        <p>Description: <%= product.getDescription() %></p>
+			<%
+			    } else {
+			%>
+			        <p>Product not found.</p>
+			<%
+			    }
+			%>
+
         </div>
 
         <form action="addToCart" method="post">

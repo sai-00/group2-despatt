@@ -3,12 +3,14 @@ package com.keebcove.model;
 public class KbPart implements Product {
 	private String name;
     private double price;
-    private String desc;
+    private String description;
+	private String category;
 
-    public KbPart(String name, double price, String desc) {
+    public KbPart(String name, double price, String description, String category) {
         this.name = name;
         this.price = price;
-        this.desc = desc;
+        this.description = description;
+        this.category = category;
     }
 
 	@Override
@@ -24,9 +26,15 @@ public class KbPart implements Product {
 	}
 
 	@Override
-	public String getDesc() {
+	public String getDescription() {
 		// TODO Auto-generated method stub
-		return desc;
+		return description;
+	}
+
+	@Override
+	public String getCategory() {
+		// TODO Auto-generated method stub
+		return category;
 	}
 
 }

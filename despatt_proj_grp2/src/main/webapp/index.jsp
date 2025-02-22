@@ -10,8 +10,8 @@
 </head>
 <body>
 	<div class="topnav">
-		<div class="logo"><a href="index.jsp"><img src="imgs/keeb_cove_logo_tr.png" width=120"></a></div>
-	  	<div class="cart"><a href="cart.jsp"><img src="imgs/cart.png" width=40"></a></div>
+		<div class="logo"><a href="index.jsp"><img src="imgs/keeb_cove_logo_tr.png" width="120"></a></div>
+	  	<div class="cart"><a href="cart.jsp"><img src="imgs/cart.png" width="40"></a></div>
 	</div>
 	
     <div class="container">

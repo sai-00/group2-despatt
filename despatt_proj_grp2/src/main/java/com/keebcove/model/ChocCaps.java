@@ -13,8 +13,14 @@ public class ChocCaps implements Product {
 	}
 
 	@Override
-	public String getDesc() {
+	public String getDescription() {
 		return "Keycaps for choc keyboards. 60 pieces";
+	}
+	
+	@Override
+	public String getCategory() {
+		// TODO Auto-generated method stub
+		return "Choc";
 	}
 
 }

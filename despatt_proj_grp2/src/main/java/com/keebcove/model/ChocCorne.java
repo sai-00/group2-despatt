@@ -13,8 +13,14 @@ public class ChocCorne implements Product {
 	}
 
 	@Override
-	public String getDesc() {
+	public String getDescription() {
 		return "Barebones set for Choc Corne build.";
+	}
+
+	@Override
+	public String getCategory() {
+		// TODO Auto-generated method stub
+		return "Choc";
 	}
 	
 }

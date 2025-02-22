@@ -13,7 +13,7 @@ public class AkkoTop40 implements Product {
 	}
 
 	@Override
-	public String getDesc() {
+	public String getDescription() {
 		return "Introducing the ACR TOP 40, a keyboard designed for ultimate minimalism and portability.\r\n"
 				+ "\r\n"
 				+ "With QMK/VIA capability, the keyboard can be programmed across different layers for maximum efficiency.\r\n"
@@ -23,6 +23,12 @@ public class AkkoTop40 implements Product {
 				+ "Note: Currently, only Akko MDA keycap sets are compatible with the 40% size. You may consider exploring third-party keycaps.\r\n"
 				+ "\r\n"
 				+ "";
+	}
+
+	@Override
+	public String getCategory() {
+		// TODO Auto-generated method stub
+		return "MX";
 	}
 
 }

@@ -3,12 +3,14 @@ package com.keebcove.model;
 public class ChocParts implements Product {
 	private String name;
     private double price;
-    private String desc;
+    private String description;
+	private String category;
 
-    public ChocParts(String name, double price, String desc) {
+    public ChocParts(String name, double price, String description, String category) {
         this.name = name;
         this.price = price;
-        this.desc = desc;
+        this.description = description;
+        this.category = category;
     }
 
 	@Override
@@ -23,10 +25,17 @@ public class ChocParts implements Product {
 		return price;
 	}
 
+
 	@Override
-	public String getDesc() {
+	public String getCategory() {
 		// TODO Auto-generated method stub
-		return desc;
+		return category;
+	}
+
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return description;
 	}
 
 }
