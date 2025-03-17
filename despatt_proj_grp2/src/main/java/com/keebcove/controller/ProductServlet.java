@@ -8,94 +8,55 @@ import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.keebcove.utility.AbstractFactory;
-import com.keebcove.utility.ChocFactory;
-import com.keebcove.utility.KbPartFactory;
-import com.keebcove.utility.SingletonDB;
-import com.keebcove.model.ChocParts;
-import com.keebcove.model.KbPart;
+import com.keebcove.utility.ProductCache;
 import com.keebcove.model.Product;
+
 /**
  * Servlet implementation class ProductServlet
  */
 public class ProductServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	
-	@Override
-	public void init() throws ServletException {
-	    SingletonDB.initialize(getServletContext()); // Load DB config from web.xml
-	}
+    @Override
+    public void init() throws ServletException {
+    	ProductCache.initialize(
+                getServletContext().getInitParameter("jdbcDriver"),
+                getServletContext().getInitParameter("jdbcUrl"),
+                getServletContext().getInitParameter("dbUserName"),
+                getServletContext().getInitParameter("dbPassword")
+            );
+    }
 
     /**
      * @see HttpServlet#HttpServlet()
      */
     public ProductServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String productName = request.getParameter("product"); 
-	    
-	    if (productName == null || productName.trim().isEmpty()) {
-	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Product name is required.");
-	        return;
-	    }
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	int productId = Integer.parseInt(request.getParameter("id"));
+        Product product = ProductCache.getClonedProduct(productId);
 
-	    Connection conn = SingletonDB.getConnection(); 
-
-	    if (conn == null) {
-	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database connection is unavailable.");
-	        return;
-	    }
-
-	    Product product = null;
-	    String sql = "SELECT category, name, price, description FROM keebproducts WHERE name = ?";
-
-	    try (PreparedStatement prep = conn.prepareStatement(sql)) {
-	        prep.setString(1, productName);
-	        ResultSet rs = prep.executeQuery();
-
-	        if (rs.next()) {
-	            String category = rs.getString("category");
-	            String name = rs.getString("name");
-	            double price = rs.getDouble("price");
-	            String description = rs.getString("description");
-
-	            AbstractFactory factory = category.equalsIgnoreCase("Choc") ? new ChocFactory() : new KbPartFactory();
-	            product = factory.getProduct(name);
-
-	        }
-	    } catch (SQLException e) {
-	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error fetching product.");
-	        return;
-	    }
-
-	    if (product == null) {
-	        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Product not found.");
-	        return;
-	    }
-
-	    request.setAttribute("product", product);
-	    RequestDispatcher dispatcher = request.getRequestDispatcher("product.jsp");
-	    dispatcher.forward(request, response);
+        if (product != null) {
+            request.setAttribute("product", product);
+            request.getRequestDispatcher("product.jsp").forward(request, response);
+        } else {
+            response.getWriter().println("Product not found.");
+        }
     }
- 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
 
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
 }
