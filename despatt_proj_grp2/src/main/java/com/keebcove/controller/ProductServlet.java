@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.keebcove.utility.DatabaseConnection;
 import com.keebcove.utility.ProductCache;
 import com.keebcove.model.Product;
 
@@ -23,13 +24,14 @@ public class ProductServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-    	ProductCache.initialize(
-                getServletContext().getInitParameter("jdbcDriver"),
-                getServletContext().getInitParameter("jdbcUrl"),
-                getServletContext().getInitParameter("dbUserName"),
-                getServletContext().getInitParameter("dbPassword")
-            );
+        DatabaseConnection.initialize(
+            getServletContext().getInitParameter("jdbcDriver"),
+            getServletContext().getInitParameter("jdbcUrl"),
+            getServletContext().getInitParameter("dbUserName"),
+            getServletContext().getInitParameter("dbPassword")
+        );
     }
+
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -43,7 +45,7 @@ public class ProductServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	int productId = Integer.parseInt(request.getParameter("id"));
-        Product product = ProductCache.getClonedProduct(productId);
+        Product product = ProductCache.getProduct(productId);
 
         if (product != null) {
             request.setAttribute("product", product);

@@ -6,28 +6,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProductCache {
-    private static final Map<Integer, Product> productMap = new HashMap<>();
+    private static Map<Integer, Product> productMap = new HashMap<>();
+    private static final DatabaseConnection dbConnection = new DatabaseConnection();
 
-    private static String jdbcUrl;
-    private static String jdbcDriver;
-    private static String dbUserName;
-    private static String dbPassword;
-
-    public static void initialize(String driver, String url, String user, String password) {
-        jdbcDriver = driver;
-        jdbcUrl = url;
-        dbUserName = user;
-        dbPassword = password;
+    static {
+        try {
+            dbConnection.createConnection();  
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException("Failed to initialize database connection", e);
+        }
     }
 
-    private static Connection getConnection() throws SQLException, ClassNotFoundException {
-        Class.forName(jdbcDriver);
-        return DriverManager.getConnection(jdbcUrl, dbUserName, dbPassword);
-    }
+    public static Product getProduct(int productId) {
+        if (productMap.containsKey(productId)) {
+            return productMap.get(productId).clone();
+        }
 
-    private static Product loadProductFromDB(int productId) {
         String sql = "SELECT * FROM keebproducts WHERE id = ?";
-        try (Connection conn = getConnection();
+        try (Connection conn = dbConnection.clone().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, productId);
@@ -43,26 +39,12 @@ public class ProductCache {
                 );
 
                 productMap.put(productId, product);
-                return product;
+                return product.clone();
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             System.err.println("Error fetching product from database: " + e.getMessage());
         }
-        return null;
-    }
 
-    public static Product getClonedProduct(int productId) {
-        Product cachedProduct = productMap.get(productId);
-
-        if (cachedProduct == null) {
-            cachedProduct = loadProductFromDB(productId); 
-        }
-
-        if (cachedProduct != null) {
-            return cachedProduct.clone(); 
-        }
-
-        System.err.println("Product with ID " + productId + " not found.");
         return null;
     }
 }
