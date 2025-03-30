@@ -29,24 +29,39 @@
             } else {
         %>
             <table>
-                <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                </tr>
-                <% for (CartItem item : cart) { 
-                    double itemTotal = item.getPrice() * item.getQuantity();
-                    total += itemTotal;
-                %>
-                <tr>
-                    <td><%= item.getProductName() %></td>
-                    <td>PHP <%= item.getPrice() %></td>
-                    <td><%= item.getQuantity() %></td>
-                    <td>PHP <%= itemTotal %></td>
-                </tr>
-                <% } %>
-            </table>
+			    <tr>
+			        <th>Product</th>
+			        <th>Price</th>
+			        <th>Quantity</th>
+			        <th>Total</th>
+			        <th>Actions</th>
+			    </tr>
+			    <% for (CartItem item : cart) { 
+			        double itemTotal = item.getPrice() * item.getQuantity();
+			        total += itemTotal;
+			    %>
+			    <tr>
+			        <td><%= item.getProductName() %></td>
+			        <td>PHP <%= item.getPrice() %></td>
+			        <td>
+			            <form action="cart" method="post">
+			                <input type="hidden" name="action" value="edit">
+			                <input type="hidden" name="productId" value="<%= item.getProductId() %>">
+			                <input type="number" name="quantity" value="<%= item.getQuantity() %>" min="1">
+			                <button type="submit">Update</button>
+			            </form>
+			        </td>
+			        <td>PHP <%= itemTotal %></td>
+			        <td>
+			            <form action="cart" method="post">
+			                <input type="hidden" name="action" value="delete">
+			                <input type="hidden" name="productId" value="<%= item.getProductId() %>">
+			                <button type="submit">Remove</button>
+			            </form>
+			        </td>
+			    </tr>
+			    <% } %>
+			</table>
             <p><strong>Grand Total: PHP <%= total %></strong></p>
 
             <form action="checkout" method="get">

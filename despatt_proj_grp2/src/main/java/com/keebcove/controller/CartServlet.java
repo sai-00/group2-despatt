@@ -28,16 +28,34 @@ public class CartServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		@SuppressWarnings("unchecked")
-		List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+	    @SuppressWarnings("unchecked")
+	    List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
 
-		if (cart == null) {
-		    cart = new ArrayList<>();
-		    session.setAttribute("cart", cart);
-		}
+	    if (cart == null) {
+	        cart = new ArrayList<>();
+	        session.setAttribute("cart", cart);
+	    }
 
-        request.setAttribute("cart", cart);
-        request.getRequestDispatcher("cart.jsp").forward(request, response);
+	    String action = request.getParameter("action");
+
+	    if ("edit".equals(action)) {
+	        int productId = Integer.parseInt(request.getParameter("productId"));
+	        int newQuantity = Integer.parseInt(request.getParameter("quantity"));
+
+	        for (CartItem item : cart) {
+	            if (item.getProductId() == productId) {
+	                item.setQuantity(newQuantity);
+	                break;
+	            }
+	        }
+	    } else if ("delete".equals(action)) {
+	        int productId = Integer.parseInt(request.getParameter("productId"));
+
+	        cart.removeIf(item -> item.getProductId() == productId);
+	    }
+
+	    session.setAttribute("cart", cart);
+	    response.sendRedirect("cart.jsp");
 	}
 
 	/**

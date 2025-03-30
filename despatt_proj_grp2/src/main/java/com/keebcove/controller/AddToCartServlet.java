@@ -67,7 +67,6 @@ public class AddToCartServlet extends HttpServlet {
 
         int availableQuantity = product.getQuantity();
 
-        // Validate if the requested quantity is available
         if (requestedQuantity > availableQuantity) {
             System.err.println("Error: Not enough stock available!");
             request.setAttribute("errorMessage", "Only " + availableQuantity + " left in stock.");
@@ -77,7 +76,6 @@ public class AddToCartServlet extends HttpServlet {
 
         System.out.println("Adding product to cart: " + productName + " (ID: " + productId + ")");
 
-        // Proceed with adding to cart
         CartManagementFacade cartFacade = new CartManagementFacade(session, productId, productName, price, requestedQuantity);
         cartFacade.process();
 
