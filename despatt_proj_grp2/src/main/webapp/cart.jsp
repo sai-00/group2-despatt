@@ -40,7 +40,7 @@
                     total += itemTotal;
                 %>
                 <tr>
-                    <td><%= item.getName() %></td>
+                    <td><%= item.getProductName() %></td>
                     <td>PHP <%= item.getPrice() %></td>
                     <td><%= item.getQuantity() %></td>
                     <td>PHP <%= itemTotal %></td>
@@ -49,7 +49,7 @@
             </table>
             <p><strong>Grand Total: PHP <%= total %></strong></p>
 
-            <form action="checkout" method="post">
+            <form action="checkout" method="get">
                 <input type="hidden" name="cartTotal" value="<%= total %>">
                 <button type="submit">Proceed to Checkout</button>
                 <br>

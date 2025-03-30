@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.keebcove.facade.CartManagementFacade;
 import com.keebcove.model.CartItem;
 
 public class AddToCartServlet extends HttpServlet {
@@ -38,31 +39,32 @@ public class AddToCartServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String productName = request.getParameter("productName");
-        String productPrice = request.getParameter("productPrice");
-        String quantityParam = request.getParameter("quantity");
+		HttpSession session = request.getSession();
 
-        // Validate that the form data is being retrieved correctly
-        if (productName == null || productPrice == null || quantityParam == null) {
-            response.sendRedirect("product.jsp"); // Redirect if something is missing
+        System.out.println("Received request to add item to cart...");
+
+        String productIdStr = request.getParameter("product_id");
+        String productName = request.getParameter("productName");
+        String priceStr = request.getParameter("productPrice");
+        String quantityStr = request.getParameter("quantity");
+
+        if (productIdStr == null || productName == null || priceStr == null || quantityStr == null ||
+            productIdStr.isEmpty() || productName.isEmpty() || priceStr.isEmpty() || quantityStr.isEmpty()) {
+            System.err.println("Error: Missing input values!");
+            response.sendRedirect("cart.jsp");
             return;
         }
 
-        int quantity = Integer.parseInt(quantityParam);
-        double price = Double.parseDouble(productPrice);
+        int productId = Integer.parseInt(productIdStr);
+        double price = Double.parseDouble(priceStr);
+        int quantity = Integer.parseInt(quantityStr);
 
-        CartItem item = new CartItem(productName, price, quantity);
+        System.out.println("Adding product to cart: " + productName + " (ID: " + productId + ")");
 
-        List<CartItem> cart = (List<CartItem>) request.getSession().getAttribute("cart");
-        if (cart == null) {
-            cart = new ArrayList<>();
-        }
+        CartManagementFacade cartFacade = new CartManagementFacade(session, productId, productName, price, quantity);
+        cartFacade.process();
 
-        cart.add(item);
-
-        request.getSession().setAttribute("cart", cart);
-
-        response.sendRedirect("cart");
+        response.sendRedirect("cart.jsp");
 	}
 
 }

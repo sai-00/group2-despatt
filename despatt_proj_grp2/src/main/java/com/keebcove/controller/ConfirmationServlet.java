@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.keebcove.model.CartItem;
 
@@ -29,7 +30,25 @@ public class ConfirmationServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+	    
+	    List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+	    String name = (String) session.getAttribute("name");
+	    String email = (String) session.getAttribute("email");
+	    String phone = (String) session.getAttribute("phone");
+	    String address = (String) session.getAttribute("address");
+	    double totalPrice = session.getAttribute("totalPrice") != null ? (double) session.getAttribute("totalPrice") : 0.0;
+
+	    // Pass attributes to JSP
+	    request.setAttribute("cart", cart);
+	    request.setAttribute("name", name);
+	    request.setAttribute("email", email);
+	    request.setAttribute("phone", phone);
+	    request.setAttribute("address", address);
+	    request.setAttribute("totalPrice", totalPrice);
+
+	    // Forward to JSP
+	    request.getRequestDispatcher("confirmation.jsp").forward(request, response);
 		
 	}
 
@@ -37,22 +56,6 @@ public class ConfirmationServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<CartItem> cart = (List<CartItem>) request.getSession().getAttribute("cart");
-
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        String address = request.getParameter("address");
-        double totalPrice = Double.parseDouble(request.getParameter("totalPrice"));
-
-        request.getSession().removeAttribute("cart");
-
-        request.setAttribute("cart", cart);
-        request.setAttribute("name", name);
-        request.setAttribute("email", email);
-        request.setAttribute("phone", phone);
-        request.setAttribute("address", address);
-        request.setAttribute("totalPrice", totalPrice);
 
         request.getRequestDispatcher("confirmation.jsp").forward(request, response);
 	}

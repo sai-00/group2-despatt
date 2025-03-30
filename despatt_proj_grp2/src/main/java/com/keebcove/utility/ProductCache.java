@@ -22,7 +22,7 @@ public class ProductCache {
             return productMap.get(productId).clone();
         }
 
-        String sql = "SELECT * FROM keebproducts WHERE id = ?";
+        String sql = "SELECT * FROM keebproducts WHERE id = ?";  
         try (Connection conn = dbConnection.clone().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -35,7 +35,8 @@ public class ProductCache {
                     rs.getString("category"),
                     rs.getString("name"),
                     rs.getDouble("price"),
-                    rs.getString("description")
+                    rs.getString("description"),
+                    rs.getInt("quantity")  // ✅ Fetch quantity from DB
                 );
 
                 productMap.put(productId, product);
@@ -46,5 +47,22 @@ public class ProductCache {
         }
 
         return null;
+    }
+
+    public static void updateProductQuantity(int productId, int newQuantity) {
+        if (productMap.containsKey(productId)) {
+            productMap.get(productId).setQuantity(newQuantity);
+        }
+
+        String sql = "UPDATE keebproducts SET quantity = ? WHERE id = ?";
+        try (Connection conn = dbConnection.clone().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, newQuantity);
+            stmt.setInt(2, productId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error updating product quantity: " + e.getMessage());
+        }
     }
 }

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.keebcove.utility.DatabaseConnection;
 import com.keebcove.utility.ProductCache;
+import com.keebcove.facade.ProductRetrievalFacade;
 import com.keebcove.model.Product;
 
 /**
@@ -44,15 +45,29 @@ public class ProductServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	int productId = Integer.parseInt(request.getParameter("id"));
-        Product product = ProductCache.getProduct(productId);
-
-        if (product != null) {
-            request.setAttribute("product", product);
+    	String productIdParam = request.getParameter("id");
+        if (productIdParam == null || productIdParam.isEmpty()) {
+            request.setAttribute("errorMessage", "Invalid product ID.");
             request.getRequestDispatcher("product.jsp").forward(request, response);
-        } else {
-            response.getWriter().println("Product not found.");
+            return;
         }
+
+        try {
+            int productId = Integer.parseInt(productIdParam);
+
+            Product product = ProductCache.getProduct(productId);
+
+            if (product == null) {
+                request.setAttribute("errorMessage", "Product not found.");
+            } else {
+                request.setAttribute("product", product);
+            }
+
+        } catch (NumberFormatException e) {
+            request.setAttribute("errorMessage", "Invalid product ID format.");
+        }
+
+        request.getRequestDispatcher("product.jsp").forward(request, response);
     }
 
     /**

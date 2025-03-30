@@ -1,6 +1,7 @@
 package com.keebcove.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -27,11 +28,14 @@ public class CartServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Retrieve the cart from the session
-        HttpSession session = request.getSession();
-        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+		HttpSession session = request.getSession();
+		List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
 
-        // Forward the cart data to the JSP for rendering
+		if (cart == null) {
+		    cart = new ArrayList<>();
+		    session.setAttribute("cart", cart);
+		}
+
         request.setAttribute("cart", cart);
         request.getRequestDispatcher("cart.jsp").forward(request, response);
 	}

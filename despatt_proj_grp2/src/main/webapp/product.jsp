@@ -24,29 +24,36 @@
 		<button><a href="index.jsp">Back to Home</a></button>
 
         <div class="product-info">
-			<%
-			    Product product = (Product) request.getAttribute("product");
-			    if (product != null) {
-			%>
-			    <h1><%= product.getName() %></h1>
-			    <p>Category: <%= product.getCategory() %></p>
-			    <p>Price: PHP <%= product.getPrice() %></p>
-			    <p>Description: <%= product.getDescription() %></p>
-			<%
-			    } else {
-			%>
-			    <p>Product not found.</p>
-			<%
-			    }
-			%>
+            <% 
+                String errorMessage = (String) request.getAttribute("errorMessage");
+                if (errorMessage != null) { 
+            %>
+                <p style="color: red;"><%= errorMessage %></p>
+            <% } else { 
+                Product product = (Product) request.getAttribute("product");
+                if (product != null) { 
+            %>
+            
+                <h1><%= product.getName() %></h1>
+                <p>Category: <%= product.getCategory() %></p>
+                <p>Price: PHP <%= product.getPrice() %></p>
+                <p>Available Quantity: <%= product.getQuantity() %></p>
+                <p>Description: <%= product.getDescription() %></p>
+            <% } else { %>
+                <p>Product not found.</p>
+            <% } } %>
         </div>
 
-        <% if (product != null) { %>
+        <% if (request.getAttribute("product") != null) { %>
         <form action="addToCart" method="post">
-            <input type="hidden" name="productName" value="<%= product.getName() %>">
-            <input type="hidden" name="productPrice" value="<%= product.getPrice() %>">
+        	<input type="hidden" name="product_id" value="<%= ((Product) request.getAttribute("product")).getId() %>">
+            <input type="hidden" name="productName" value="<%= ((Product) request.getAttribute("product")).getName() %>">
+            <input type="hidden" name="productPrice" value="<%= ((Product) request.getAttribute("product")).getPrice() %>">
+            <input type="hidden" name="productQuantity" value="<%= ((Product) request.getAttribute("product")).getQuantity() %>">
+            
             <label for="quantity">Quantity: </label>
-            <input type="number" id="quantity" name="quantity" value="1" min="1" required class="quan-box">
+            <input type="number" id="quantity" name="quantity" value="1" min="1" 
+                   max="<%= ((Product) request.getAttribute("product")).getQuantity() %>" required class="quan-box">
             <button type="submit">Add to Cart</button>
         </form>
         <% } %>

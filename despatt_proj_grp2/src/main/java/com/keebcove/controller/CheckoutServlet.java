@@ -8,7 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.keebcove.facade.CheckoutProcessingFacade;
 import com.keebcove.model.CartItem;
 
 /**
@@ -29,26 +31,67 @@ public class CheckoutServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+	    List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cart");
+
+	    double totalPrice = 0.0;
+	    if (cartItems != null) {
+	        for (CartItem item : cartItems) {
+	            totalPrice += item.getPrice() * item.getQuantity();
+	        }
+	    }
+
+	    request.setAttribute("cart", cartItems);
+	    request.setAttribute("totalPrice", totalPrice);
+	    session.setAttribute("totalPrice", totalPrice);  
+
+	    request.getRequestDispatcher("checkout.jsp").forward(request, response);
+
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<CartItem> cart = (List<CartItem>) request.getSession().getAttribute("cart");
+		HttpSession session = request.getSession();
 
-        double totalPrice = 0;
-        if (cart != null) {
-            for (CartItem item : cart) {
-                totalPrice += item.getPrice() * item.getQuantity();
-            }
-        }
+	    String customerName = request.getParameter("name");
+	    String email = request.getParameter("email");
+	    String phone = request.getParameter("phone");
+	    String address = request.getParameter("address");
+	    String cardNumber = request.getParameter("card_number");
 
-        request.setAttribute("cart", cart);
-        request.setAttribute("totalPrice", totalPrice);
+	    List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cart");
+	    double totalPrice = (session.getAttribute("totalPrice") != null) ? (double) session.getAttribute("totalPrice") : 0.0;
 
-        request.getRequestDispatcher("checkout.jsp").forward(request, response);
+	    if (cartItems == null || cartItems.isEmpty()) {
+	        session.setAttribute("errorMessage", "Your cart is empty.");
+	        response.sendRedirect("checkout.jsp");
+	        return;
+	    }
+
+	    CheckoutProcessingFacade checkoutFacade = new CheckoutProcessingFacade(cartItems, cardNumber, customerName, email, phone, address);
+	    checkoutFacade.process();
+
+	    System.out.println("Checkout Status - Order Successful: " + checkoutFacade.isOrderSuccessful());
+
+	    if (checkoutFacade.isOrderSuccessful()) {
+	        session.setAttribute("orderSuccess", true);
+	        session.setAttribute("name", customerName);
+	        session.setAttribute("email", email);
+	        session.setAttribute("phone", phone);
+	        session.setAttribute("address", address);
+	        session.setAttribute("cart", cartItems);  
+	        session.setAttribute("totalPrice", totalPrice); 
+
+	        session.removeAttribute("errorMessage"); 
+	        System.out.println("Redirecting to confirmation.jsp");
+	        response.sendRedirect("confirmation.jsp");
+	    } else {
+	        session.setAttribute("orderSuccess", false);
+	        session.setAttribute("errorMessage", "Payment failed. Please check your card details.");
+	        response.sendRedirect("checkout.jsp");
+	    }
 	}
 
 }
