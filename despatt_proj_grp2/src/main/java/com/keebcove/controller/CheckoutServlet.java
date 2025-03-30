@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +31,8 @@ public class CheckoutServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-	    List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cart");
+	    @SuppressWarnings("unchecked")
+		List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cart");
 
 	    double totalPrice = 0.0;
 	    if (cartItems != null) {
@@ -61,7 +61,8 @@ public class CheckoutServlet extends HttpServlet {
 	    String address = request.getParameter("address");
 	    String cardNumber = request.getParameter("card_number");
 
-	    List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cart");
+	    @SuppressWarnings("unchecked")
+		List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cart");
 	    double totalPrice = (session.getAttribute("totalPrice") != null) ? (double) session.getAttribute("totalPrice") : 0.0;
 
 	    if (cartItems == null || cartItems.isEmpty()) {

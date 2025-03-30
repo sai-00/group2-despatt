@@ -9,6 +9,7 @@ import com.keebcove.model.CartItem;
 import com.keebcove.utility.CardNumberValidator;
 import com.keebcove.utility.DatabaseConnection;
 import com.keebcove.utility.Facade;
+import com.keebcove.utility.ProductCache;
 
 public class CheckoutProcessingFacade implements Facade {
     private List<CartItem> cartItems;
@@ -86,6 +87,8 @@ public class CheckoutProcessingFacade implements Facade {
                 stmt.setInt(1, item.getQuantity());
                 stmt.setInt(2, item.getProductId());
                 stmt.addBatch();
+                
+                ProductCache.invalidate(item.getProductId());
             }
 
             int[] results = stmt.executeBatch();

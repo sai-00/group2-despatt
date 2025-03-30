@@ -44,7 +44,11 @@
             <% } } %>
         </div>
 
-        <% if (request.getAttribute("product") != null) { %>
+        <%
+        	if (request.getAttribute("product") != null) { 
+	        Product product = (Product) request.getAttribute("product"); 
+		    int availableQuantity = product.getQuantity();
+	    %>
         <form action="addToCart" method="post">
         	<input type="hidden" name="product_id" value="<%= ((Product) request.getAttribute("product")).getId() %>">
             <input type="hidden" name="productName" value="<%= ((Product) request.getAttribute("product")).getName() %>">
@@ -52,9 +56,15 @@
             <input type="hidden" name="productQuantity" value="<%= ((Product) request.getAttribute("product")).getQuantity() %>">
             
             <label for="quantity">Quantity: </label>
-            <input type="number" id="quantity" name="quantity" value="1" min="1" 
-                   max="<%= ((Product) request.getAttribute("product")).getQuantity() %>" required class="quan-box">
-            <button type="submit">Add to Cart</button>
+		        <input type="number" id="quantity" name="quantity" value="1" min="1" 
+		               max="<%= availableQuantity %>" required class="quan-box" 
+		               <%= availableQuantity == 0 ? "disabled" : "" %>>
+		               
+		        <button type="submit" <%= availableQuantity == 0 ? "disabled" : "" %>>Add to Cart</button>
+		        
+		        <% if (availableQuantity == 0) { %>
+		            <p style="color: red;">Out of stock</p>
+		        <% } %>
         </form>
         <% } %>
 

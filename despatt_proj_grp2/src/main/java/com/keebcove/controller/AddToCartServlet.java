@@ -1,20 +1,16 @@
 package com.keebcove.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.keebcove.facade.CartManagementFacade;
-import com.keebcove.model.CartItem;
+import com.keebcove.model.Product;
+import com.keebcove.utility.ProductCache;
 
 public class AddToCartServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -57,11 +53,32 @@ public class AddToCartServlet extends HttpServlet {
 
         int productId = Integer.parseInt(productIdStr);
         double price = Double.parseDouble(priceStr);
-        int quantity = Integer.parseInt(quantityStr);
+        int requestedQuantity = Integer.parseInt(quantityStr);
 
         System.out.println("Adding product to cart: " + productName + " (ID: " + productId + ")");
 
-        CartManagementFacade cartFacade = new CartManagementFacade(session, productId, productName, price, quantity);
+        Product product = ProductCache.getProduct(productId);
+        if (product == null) {
+            System.err.println("Error: Product not found!");
+            request.setAttribute("errorMessage", "Product not found.");
+            request.getRequestDispatcher("product.jsp").forward(request, response);
+            return;
+        }
+
+        int availableQuantity = product.getQuantity();
+
+        // Validate if the requested quantity is available
+        if (requestedQuantity > availableQuantity) {
+            System.err.println("Error: Not enough stock available!");
+            request.setAttribute("errorMessage", "Only " + availableQuantity + " left in stock.");
+            request.getRequestDispatcher("product.jsp").forward(request, response);
+            return;
+        }
+
+        System.out.println("Adding product to cart: " + productName + " (ID: " + productId + ")");
+
+        // Proceed with adding to cart
+        CartManagementFacade cartFacade = new CartManagementFacade(session, productId, productName, price, requestedQuantity);
         cartFacade.process();
 
         response.sendRedirect("cart.jsp");
