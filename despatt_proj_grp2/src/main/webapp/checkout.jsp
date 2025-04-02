@@ -8,6 +8,7 @@
     <title>KeebCove - Checkout</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/checkout.css">
+    <style> .error {color: red; font-weight: bold;}</style>
 </head>
 <body>
 	<div class="topnav">
@@ -19,10 +20,17 @@
         <h1>Checkout</h1>
 
         <h2>Cart Items</h2>
-        <%
-            List<CartItem> cart = (List<CartItem>) request.getAttribute("cart");
-            Double totalPriceObj = (Double) request.getAttribute("totalPrice"); 
-            double totalPrice = (totalPriceObj != null) ? totalPriceObj : 0.0;
+         <%
+            // Recalculate the totalPrice based on the session cart
+            List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+            double totalPrice = 0.0;
+            if (cart != null) {
+                for (CartItem item : cart) {
+                    totalPrice += item.getPrice() * item.getQuantity();
+                }
+            }
+            // Update totalPrice in session to keep it consistent across requests
+            session.setAttribute("totalPrice", totalPrice); 
         %>
 
         <% if (cart == null || cart.isEmpty()) { %>
@@ -47,7 +55,8 @@
             <p><strong>Grand Total: PHP <%= totalPrice %></strong></p>
         <% } %>
 
-        <h2>Billing Information</h2>
+        <h2>Billing Information</h2>		
+        
         <form action="checkout" method="post">
             <input type="hidden" name="totalPrice" value="<%= totalPrice %>">
 
@@ -64,7 +73,17 @@
             <textarea id="address" name="address" required></textarea><br><br>
 
             <label for="card_number">Card Number:</label><br>
-            <input type="text" id="card_number" name="card_number" required><br><br>
+            <input type="text" id="card_number" name="card_number" required>
+            <%
+   		 String errorMessage = (String) session.getAttribute("errorMessage");
+    			if (errorMessage != null) {
+	    %>
+    			<p class="error"><%= errorMessage %></p>
+	    <%
+    			session.removeAttribute("errorMessage"); 
+    			}
+	    %>
+            <br><br>
 
             <button type="submit">Confirm Purchase</button>
         </form>
