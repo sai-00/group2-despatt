@@ -10,6 +10,7 @@ import com.keebcove.utility.CardNumberValidator;
 import com.keebcove.utility.DatabaseConnection;
 import com.keebcove.utility.Facade;
 import com.keebcove.utility.ProductCache;
+import com.keebcove.utility.GmailService;
 
 public class CheckoutProcessingFacade implements Facade {
     private List<CartItem> cartItems;
@@ -29,6 +30,16 @@ public class CheckoutProcessingFacade implements Facade {
         this.email = email;
         this.phone = phone;
         this.address = address;
+    }
+    
+    private void sendReciept() {
+    	System.out.println("Email is sending");
+    	try {
+    		 GmailService.sendEmail(email, "Test Email", "This is a test email sent from Java from the Facade");
+    	} catch (Exception e) {
+    		System.err.println("Failed to send email" + e.getMessage());
+    	}
+    	
     }
     
     private void validateCard() {
@@ -108,6 +119,7 @@ public class CheckoutProcessingFacade implements Facade {
 
     @Override
     public void process() {
+    	this.sendReciept();
         this.validateCard();
         if (this.isValidCard) {
             try (Connection conn = new DatabaseConnection().clone().getConnection()) {
