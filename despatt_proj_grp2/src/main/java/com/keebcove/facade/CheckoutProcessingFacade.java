@@ -8,9 +8,9 @@ import java.util.List;
 import com.keebcove.model.CartItem;
 import com.keebcove.utility.CardNumberValidator;
 import com.keebcove.utility.DatabaseConnection;
+import com.keebcove.utility.EmailSender;
 import com.keebcove.utility.Facade;
 import com.keebcove.utility.ProductCache;
-import com.keebcove.utility.GmailService;
 
 public class CheckoutProcessingFacade implements Facade {
     private List<CartItem> cartItems;
@@ -30,16 +30,6 @@ public class CheckoutProcessingFacade implements Facade {
         this.email = email;
         this.phone = phone;
         this.address = address;
-    }
-    
-    private void sendReciept() {
-    	System.out.println("Email is sending");
-    	try {
-    		 GmailService.sendEmail(email, "Test Email", "This is a test email sent from Java from the Facade");
-    	} catch (Exception e) {
-    		System.err.println("Failed to send email" + e.getMessage());
-    	}
-    	
     }
     
     private void validateCard() {
@@ -111,15 +101,27 @@ public class CheckoutProcessingFacade implements Facade {
         }
     }
 
-
     public boolean isOrderSuccessful() {
         System.out.println("Final Order Status - Card Valid: " + this.isValidCard + ", Order Saved: " + this.isOrderSaved + ", Stock Updated: " + this.isStockUpdated);
         return this.isValidCard && this.isOrderSaved && this.isStockUpdated;
     }
+    
+    public void resetState() {
+        this.isValidCard = false;
+        this.isOrderSaved = false;
+        this.isStockUpdated = false;
+        
+        if (this.cartItems == null || this.cartItems.isEmpty()) {
+            System.err.println("Cart is empty after reset.");
+        } else {
+            System.out.println("Cart contains " + this.cartItems.size() + " items after reset.");
+        }
+    }
 
     @Override
     public void process() {
-    	this.sendReciept();
+    	this.resetState();
+    	
         this.validateCard();
         if (this.isValidCard) {
             try (Connection conn = new DatabaseConnection().clone().getConnection()) {
@@ -137,6 +139,14 @@ public class CheckoutProcessingFacade implements Facade {
 
                 conn.commit();
                 System.out.println("Transaction committed successfully.");
+                
+                if (this.isOrderSuccessful()) {
+                    double totalOrderPrice = cartItems.stream()
+                            .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                            .sum();
+                    EmailSender.sendOrderConfirmation(this.email, this.customerName, this.cartItems, totalOrderPrice, this.address);
+                }
+                
             } catch (SQLException e) {
                 System.err.println("Transaction failed: " + e.getMessage());
                 e.printStackTrace();

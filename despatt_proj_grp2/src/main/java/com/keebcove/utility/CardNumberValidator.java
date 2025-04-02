@@ -2,10 +2,10 @@ package com.keebcove.utility;
 
 public class CardNumberValidator {
 	public static boolean luhnTest(String number){
-		if (number == null || number.trim().isEmpty()) {
-            return false;  
-        }
-        number = number.trim(); 
+		if (number == null || number.trim().isEmpty()) return false;  
+		else number = number.trim(); 
+        
+        if (number.length() != 16) return false;
 
         int s1 = 0, s2 = 0;
         String reverse = new StringBuilder(number).reverse().toString();

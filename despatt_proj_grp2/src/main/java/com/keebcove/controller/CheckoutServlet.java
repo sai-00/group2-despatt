@@ -93,6 +93,8 @@ public class CheckoutServlet extends HttpServlet {
 	        session.setAttribute("errorMessage", "Payment failed. Please check your card details.");
 	        response.sendRedirect("checkout.jsp");
 	    }
+
+
 	}
 
 }
